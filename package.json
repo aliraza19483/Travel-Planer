@@ -1,0 +1,21 @@
+{
+  "name": "travel-planner-root",
+  "version": "1.0.0",
+  "description": "Intelligent Travel Planner & Itinerary Management System — 7th Semester Server-Side College Project",
+  "scripts": {
+    "start": "node server/src/server.js",
+    "dev": "node --watch server/src/server.js",
+    "install:server": "cd server && npm install",
+    "seed": "node server/src/utils/seed.js"
+  },
+  "keywords": [
+    "travel-planner",
+    "server-side",
+    "college-project",
+    "express",
+    "rest-api",
+    "weather"
+  ],
+  "author": "7th Semester Server Side Project",
+  "license": "ISC"
+}

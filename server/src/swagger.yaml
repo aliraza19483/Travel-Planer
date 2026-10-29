@@ -1,0 +1,822 @@
+openapi: 3.0.3
+info:
+  title: WanderPlan — Travel Planner API
+  description: |
+    ## 🌍 WanderPlan Travel Planner & Itinerary Management API
+
+    **7th Semester Server-Side Web Development College Project**
+
+    This RESTful API powers the WanderPlan travel planning application. It provides endpoints for:
+    - 🔐 **Authentication** — JWT-based user registration, login, and session management
+    - 🗺️ **Destinations** — Search, browse, and fetch real-time weather for curated destinations
+    - 🧳 **Trips & Itineraries** — Full CRUD for travel trips, day-by-day itinerary activities
+    - 💰 **Budget Tracking** — Real-time expense logging and budget analytics
+    - 🔗 **Trip Sharing** — Share itineraries publicly with secure token-based links
+    - ✨ **AI Auto-Generator** — Smart itinerary auto-curation based on travel vibe
+    - 🎒 **Packing Checklist** — Weather-driven smart packing recommendations
+
+    ### Authentication
+    Use **Bearer token** (JWT) in the `Authorization` header for protected endpoints.
+    Get a token via `POST /api/auth/login`. Demo credentials: `alex@traveler.com / Password123`
+  version: 1.0.0
+  contact:
+    name: WanderPlan College Project
+    email: student@dit.edu.in
+  license:
+    name: ISC
+    url: https://opensource.org/licenses/ISC
+
+servers:
+  - url: http://localhost:5000
+    description: Local Development Server
+
+tags:
+  - name: Health
+    description: Server health check
+  - name: Authentication
+    description: User registration, login, and profile
+  - name: Destinations
+    description: Browse destinations, weather, and reviews
+  - name: Trips
+    description: Trip CRUD and itinerary management
+  - name: Budget
+    description: Expense tracking and budget analytics
+  - name: Sharing
+    description: Public trip sharing
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "JWT token from login endpoint. Format: Bearer <token>"
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: string, example: "u_abc123" }
+        name: { type: string, example: "Alex Rivera" }
+        email: { type: string, example: "alex@traveler.com" }
+        role: { type: string, example: "traveler" }
+        createdAt: { type: string, format: date-time }
+
+    Destination:
+      type: object
+      properties:
+        id: { type: string, example: "dest_001" }
+        name: { type: string, example: "Manali" }
+        state: { type: string, example: "Himachal Pradesh" }
+        country: { type: string, example: "India" }
+        category: { type: string, example: "Mountains", enum: [Mountains, Beaches, Heritage, Urban] }
+        description: { type: string }
+        imageUrl: { type: string, format: uri }
+        avgRating: { type: number, format: float, example: 4.8 }
+        totalReviews: { type: integer, example: 12 }
+        coordinates:
+          type: object
+          properties:
+            lat: { type: number, example: 32.2432 }
+            lng: { type: number, example: 77.1892 }
+
+    Trip:
+      type: object
+      properties:
+        id: { type: string, example: "trip_abc123" }
+        userId: { type: string }
+        title: { type: string, example: "Winter Adventure in Manali" }
+        destinationCity: { type: string, example: "Manali" }
+        startDate: { type: string, format: date, example: "2026-12-20" }
+        endDate: { type: string, format: date, example: "2026-12-25" }
+        totalBudget: { type: number, example: 30000 }
+        isPublic: { type: boolean, example: false }
+        shareToken: { type: string, example: "tr-abc12345" }
+        status: { type: string, enum: [planned, ongoing, completed] }
+
+    ItineraryActivity:
+      type: object
+      properties:
+        id: { type: string }
+        dayId: { type: string }
+        title: { type: string, example: "Paragliding at Solang Valley" }
+        placeName: { type: string, example: "Solang Ground, Burwa" }
+        startTime: { type: string, example: "09:00" }
+        endTime: { type: string, example: "11:30" }
+        transportMode: { type: string, enum: [Walking, Car, Bus, Train, Flight, Ferry], example: "Car" }
+        estimatedCost: { type: number, example: 2500 }
+        notes: { type: string }
+
+    Expense:
+      type: object
+      properties:
+        id: { type: string }
+        tripId: { type: string }
+        category: { type: string, enum: [Lodging, Transport, Food, Activities, Shopping, Miscellaneous] }
+        amount: { type: number, example: 1500 }
+        description: { type: string, example: "Hotel deposit" }
+        expenseDate: { type: string, format: date }
+
+    ApiSuccess:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+
+    ApiError:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        message: { type: string, example: "Unauthorized. Please provide a valid token." }
+
+paths:
+  /api/health:
+    get:
+      tags: [Health]
+      summary: Server health check
+      description: Verify server is running and check version info
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: "healthy" }
+                  timestamp: { type: string, format: date-time }
+                  project: { type: string, example: "Travel Planner & Itinerary Management" }
+
+  /api/auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a new traveler account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name: { type: string, example: "Alex Rivera" }
+                email: { type: string, example: "alex@traveler.com" }
+                password: { type: string, minLength: 6, example: "Password123" }
+      responses:
+        "201":
+          description: Account created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  token: { type: string, description: "JWT token for authenticated requests" }
+                  user: { $ref: "#/components/schemas/User" }
+        "400":
+          description: Validation error or email already in use
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/auth/login:
+    post:
+      tags: [Authentication]
+      summary: Sign in to WanderPlan
+      description: Authenticate with email and password. Demo credentials — email:alex@traveler.com / password:Password123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, example: "alex@traveler.com" }
+                password: { type: string, example: "Password123" }
+      responses:
+        "200":
+          description: Login successful, returns JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  token: { type: string }
+                  user: { $ref: "#/components/schemas/User" }
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current user profile
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Current user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  user: { $ref: "#/components/schemas/User" }
+        "401":
+          description: Missing or invalid token
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/auth/profile:
+    get:
+      tags: [Authentication]
+      summary: Get detailed user profile with trip & expense statistics
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Profile and statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  user:
+                    type: object
+                    properties:
+                      id: { type: string }
+                      name: { type: string }
+                      email: { type: string }
+                      role: { type: string }
+                      phone: { type: string }
+                      bio: { type: string }
+                      travelStyle: { type: string }
+                      createdAt: { type: string }
+                      stats:
+                        type: object
+                        properties:
+                          totalTrips: { type: integer, example: 3 }
+                          totalExpensesLogged: { type: integer, example: 8 }
+                          totalSpent: { type: number, example: 18500 }
+    put:
+      tags: [Authentication]
+      summary: Update user profile details
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: "Alex Rivera" }
+                email: { type: string, example: "alex@traveler.com" }
+                phone: { type: string, example: "+91 98765 43210" }
+                bio: { type: string, example: "Himalayan trekking and cultural photography enthusiast" }
+                travelStyle: { type: string, example: "Adventure & Photography" }
+      responses:
+        "200":
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string }
+                  token: { type: string }
+                  user: { $ref: "#/components/schemas/User" }
+        "409":
+          description: Email address already taken by another account
+
+  /api/auth/change-password:
+    put:
+      tags: [Authentication]
+      summary: Change account password
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword: { type: string, example: "Password123" }
+                newPassword: { type: string, minLength: 6, example: "NewSecurePassword123" }
+      responses:
+        "200":
+          description: Password updated successfully
+        "400":
+          description: Password validation error
+        "401":
+          description: Current password incorrect
+
+  /api/auth/account:
+    delete:
+      tags: [Authentication]
+      summary: Delete user account and cascade delete all personal data
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Account permanently deleted
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiSuccess" }
+
+  /api/auth/users:
+    get:
+      tags: [Authentication]
+      summary: List all registered travelers (Viva Inspection)
+      responses:
+        "200":
+          description: List of registered users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  count: { type: integer, example: 2 }
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: string }
+                        name: { type: string }
+                        email: { type: string }
+                        role: { type: string }
+                        phone: { type: string }
+                        bio: { type: string }
+                        travelStyle: { type: string }
+                        tripCount: { type: integer }
+
+  /api/destinations:
+    get:
+      tags: [Destinations]
+      summary: Get all curated destinations
+      description: Returns all destinations. Supports optional search and category filter.
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+          description: Search keyword (city, state, or country)
+          example: "Manali"
+        - name: category
+          in: query
+          schema: { type: string, enum: [Mountains, Beaches, Heritage, Urban] }
+          description: Filter by destination category
+      responses:
+        "200":
+          description: List of destinations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  count: { type: integer }
+                  destinations:
+                    type: array
+                    items: { $ref: "#/components/schemas/Destination" }
+
+  /api/destinations/{id}:
+    get:
+      tags: [Destinations]
+      summary: Get destination with reviews
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Destination details with traveler reviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  destination:
+                    allOf:
+                      - { $ref: "#/components/schemas/Destination" }
+                      - type: object
+                        properties:
+                          reviews:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                rating: { type: integer }
+                                comment: { type: string }
+                                userName: { type: string }
+        "404":
+          description: Destination not found
+
+  /api/destinations/{id}/weather:
+    get:
+      tags: [Destinations]
+      summary: Get real-time weather for a destination
+      description: Returns current weather, 5-day forecast, and travel advisory. Cached for 30 minutes.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Weather data with travel advisory
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  weather:
+                    type: object
+                    properties:
+                      current:
+                        type: object
+                        properties:
+                          temperature: { type: number, example: 12 }
+                          condition: { type: string, example: "Clear Sky" }
+                          humidity: { type: string, example: "65%" }
+                          wind: { type: string, example: "15 km/h" }
+                          icon: { type: string, example: "☀️" }
+                      travelAdvisory: { type: string }
+                      forecast:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            dayName: { type: string }
+                            tempMax: { type: number }
+                            tempMin: { type: number }
+                            icon: { type: string }
+
+  /api/destinations/{id}/reviews:
+    post:
+      tags: [Destinations]
+      summary: Submit a traveler review
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating, comment]
+              properties:
+                rating: { type: integer, minimum: 1, maximum: 5, example: 5 }
+                comment: { type: string, example: "Breathtaking views! Must visit in winter." }
+      responses:
+        "201":
+          description: Review submitted successfully
+        "401":
+          description: Authentication required
+
+  /api/trips:
+    get:
+      tags: [Trips]
+      summary: Get all trips for the logged-in user
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: User's trip list with budget analytics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  count: { type: integer }
+                  trips:
+                    type: array
+                    items: { $ref: "#/components/schemas/Trip" }
+        "401":
+          description: Authentication required
+
+    post:
+      tags: [Trips]
+      summary: Create a new trip with auto-generated itinerary days
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, destinationCity, startDate, endDate]
+              properties:
+                title: { type: string, example: "Winter Trip to Manali" }
+                destinationCity: { type: string, example: "Manali" }
+                destinationId: { type: string, description: "Optional linked destination ID" }
+                startDate: { type: string, format: date, example: "2026-12-20" }
+                endDate: { type: string, format: date, example: "2026-12-25" }
+                totalBudget: { type: number, example: 30000 }
+      responses:
+        "201":
+          description: Trip created with day slots auto-generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+                  trip: { $ref: "#/components/schemas/Trip" }
+
+  /api/trips/{id}:
+    get:
+      tags: [Trips]
+      summary: Get full trip details with itinerary and weather
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Full trip data with days, activities, and weather
+        "404":
+          description: Trip not found
+
+    put:
+      tags: [Trips]
+      summary: Update trip metadata (dates, budget, title)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                startDate: { type: string, format: date }
+                endDate: { type: string, format: date }
+                totalBudget: { type: number }
+      responses:
+        "200":
+          description: Trip updated successfully
+
+    delete:
+      tags: [Trips]
+      summary: Delete a trip and all its itinerary data
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Trip deleted successfully
+
+  /api/trips/{id}/days/{dayId}/items:
+    post:
+      tags: [Trips]
+      summary: Add an activity to a specific itinerary day
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: dayId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title: { type: string, example: "Paragliding at Solang Valley" }
+                placeName: { type: string }
+                startTime: { type: string, example: "09:00" }
+                endTime: { type: string, example: "11:30" }
+                transportMode: { type: string, enum: [Walking, Car, Bus, Train, Flight, Ferry] }
+                estimatedCost: { type: number }
+                notes: { type: string }
+      responses:
+        "201":
+          description: Activity added to itinerary
+
+  /api/trips/{id}/auto-generate:
+    post:
+      tags: [Trips]
+      summary: "✨ AI Auto-Generate a full multi-day itinerary"
+      description: Intelligently curates morning, afternoon, and evening activities based on travel style and budget tier. Replaces empty day slots with curated plans.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                travelStyle:
+                  type: string
+                  enum: [Adventure, Relaxation, Heritage, Foodie]
+                  example: "Adventure"
+                  description: "Travel vibe that shapes the AI's curated activity selections"
+                budgetTier:
+                  type: string
+                  enum: [budget, moderate, luxury]
+                  example: "moderate"
+      responses:
+        "200":
+          description: Full itinerary auto-generated with curated activities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string, example: "Generated 15 activities across 5 days." }
+                  totalActivities: { type: integer }
+
+  /api/trips/{id}/packing-checklist:
+    get:
+      tags: [Trips]
+      summary: "🎒 Get weather-driven packing checklist"
+      description: Generates a smart packing checklist based on the trip destination's current weather conditions.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Packing checklist organized by category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  city: { type: string }
+                  weather:
+                    type: object
+                    properties:
+                      temperature: { type: number }
+                      condition: { type: string }
+                  checklist:
+                    type: object
+                    properties:
+                      essentials: { type: array, items: { type: object, properties: { name: { type: string } } } }
+                      clothing: { type: array, items: { type: object, properties: { name: { type: string } } } }
+                      electronics: { type: array, items: { type: object, properties: { name: { type: string } } } }
+                      destinationSpecific: { type: array, items: { type: object, properties: { name: { type: string } } } }
+
+  /api/trips/{id}/share:
+    post:
+      tags: [Sharing]
+      summary: Toggle public/private sharing for a trip
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isPublic: { type: boolean, example: true }
+      responses:
+        "200":
+          description: Sharing status toggled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  isPublic: { type: boolean }
+                  shareToken: { type: string, example: "tr-abc12345" }
+                  shareUrl: { type: string, example: "/shared/trip/tr-abc12345" }
+
+  /api/trips/{id}/expenses:
+    get:
+      tags: [Budget]
+      summary: Get full budget summary and expense log for a trip
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Budget analytics and expense history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  budget:
+                    type: object
+                    properties:
+                      totalBudget: { type: number }
+                      totalSpent: { type: number }
+                      remaining: { type: number }
+                      utilizationPercent: { type: integer }
+                      isOverBudget: { type: boolean }
+                      breakdown:
+                        type: object
+                        description: Spending per category (Lodging, Transport, Food, etc.)
+                      expenses:
+                        type: array
+                        items: { $ref: "#/components/schemas/Expense" }
+
+    post:
+      tags: [Budget]
+      summary: Log a new expense to a trip
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [category, amount]
+              properties:
+                category:
+                  type: string
+                  enum: [Lodging, Transport, Food, Activities, Shopping, Miscellaneous]
+                  example: "Lodging"
+                amount: { type: number, example: 2500 }
+                description: { type: string, example: "Hotel Himalayan Vista — 2 nights" }
+                expenseDate: { type: string, format: date }
+      responses:
+        "201":
+          description: Expense logged successfully
+
+  /api/shared/{shareToken}:
+    get:
+      tags: [Sharing]
+      summary: Get a publicly shared trip itinerary (no auth required)
+      description: Returns full trip itinerary for a share token. Anyone with the link can view.
+      parameters:
+        - name: shareToken
+          in: path
+          required: true
+          schema: { type: string, example: "tr-abc12345" }
+      responses:
+        "200":
+          description: Public trip view
+        "404":
+          description: Share token not found or trip is private

@@ -1,0 +1,404 @@
+{
+  "users": [
+    {
+      "id": "0c1098e9-a227-4a48-9027-9f9bc030643a",
+      "name": "Alex Rivera",
+      "email": "alex@traveler.com",
+      "passwordHash": "$2a$10$qRksb0QZkteSaQmsLg9PbeRN/DZZU9Sg3FSu7tbg7so7LnxzwHbdK",
+      "role": "traveler",
+      "createdAt": "2026-10-29T07:11:26.851Z",
+      "updatedAt": "2026-10-29T08:13:00.786Z",
+      "phone": "",
+      "bio": "Solo Backpacker",
+      "travelStyle": "Adventure & Culture"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "dest-manali",
+      "name": "Manali",
+      "state": "Himachal Pradesh",
+      "country": "India",
+      "category": "Mountains",
+      "lat": 32.2432,
+      "lon": 77.1892,
+      "imageUrl": "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+      "description": "Nestled in the Beas River valley, Manali is a premier Himalayan hill station famous for snow peaks, adventure sports, Solang Valley, and Rohtang Pass.",
+      "bestSeason": "October to June",
+      "avgRating": 4.8,
+      "totalReviews": 24,
+      "createdAt": "2026-10-29T07:11:26.858Z",
+      "updatedAt": "2026-10-29T07:11:26.858Z"
+    },
+    {
+      "id": "dest-goa",
+      "name": "Goa",
+      "state": "Goa",
+      "country": "India",
+      "category": "Beaches",
+      "lat": 15.2993,
+      "lon": 74.124,
+      "imageUrl": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+      "description": "Golden sandy beaches, Portuguese colonial heritage, vibrant flea markets, water sports, and tranquil coastal cafes.",
+      "bestSeason": "November to February",
+      "avgRating": 4.7,
+      "totalReviews": 38,
+      "createdAt": "2026-10-29T07:11:26.863Z",
+      "updatedAt": "2026-10-29T07:11:26.863Z"
+    },
+    {
+      "id": "dest-jaipur",
+      "name": "Jaipur",
+      "state": "Rajasthan",
+      "country": "India",
+      "category": "Heritage",
+      "lat": 26.9124,
+      "lon": 75.7873,
+      "imageUrl": "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80",
+      "description": "The historic Pink City, home to majestic Amber Fort, Hawa Mahal, City Palace, vibrant handicraft bazaars, and royal culinary delights.",
+      "bestSeason": "October to March",
+      "avgRating": 4.9,
+      "totalReviews": 45,
+      "createdAt": "2026-10-29T07:11:26.866Z",
+      "updatedAt": "2026-10-29T07:11:26.866Z"
+    },
+    {
+      "id": "dest-tokyo",
+      "name": "Tokyo",
+      "state": "Kanto",
+      "country": "Japan",
+      "category": "Urban",
+      "lat": 35.6762,
+      "lon": 139.6503,
+      "imageUrl": "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+      "description": "A futuristic metropolis combining neon skyscrapers, ancient Shinto shrines, unmatched gastronomy, bullet trains, and anime culture.",
+      "bestSeason": "March to May & September to November",
+      "avgRating": 4.9,
+      "totalReviews": 62,
+      "createdAt": "2026-10-29T07:11:26.870Z",
+      "updatedAt": "2026-10-29T07:11:26.870Z"
+    },
+    {
+      "id": "dest-paris",
+      "name": "Paris",
+      "state": "Île-de-France",
+      "country": "France",
+      "category": "Heritage",
+      "lat": 48.8566,
+      "lon": 2.3522,
+      "imageUrl": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
+      "description": "The City of Light, renowned for the Eiffel Tower, world-class art museums like the Louvre, boutique fashion, and Seine river cruises.",
+      "bestSeason": "April to October",
+      "avgRating": 4.6,
+      "totalReviews": 50,
+      "createdAt": "2026-10-29T07:11:26.874Z",
+      "updatedAt": "2026-10-29T07:11:26.874Z"
+    },
+    {
+      "id": "dest-bali",
+      "name": "Bali",
+      "state": "Bali",
+      "country": "Indonesia",
+      "category": "Tropical",
+      "lat": -8.4095,
+      "lon": 115.1889,
+      "imageUrl": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+      "description": "The Island of the Gods featuring lush terraced rice fields in Ubud, serene Hindu water temples, volcanic peaks, and pristine surf breaks.",
+      "bestSeason": "April to October",
+      "avgRating": 4.8,
+      "totalReviews": 41,
+      "createdAt": "2026-10-29T07:11:26.878Z",
+      "updatedAt": "2026-10-29T07:11:26.878Z"
+    }
+  ],
+  "trips": [
+    {
+      "id": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "userId": "0c1098e9-a227-4a48-9027-9f9bc030643a",
+      "title": "Himalayan Escape: Manali Adventure",
+      "destinationCity": "Manali",
+      "destinationId": "dest-manali",
+      "startDate": "2026-11-10",
+      "endDate": "2026-11-13",
+      "totalBudget": 25000,
+      "status": "planned",
+      "isPublic": true,
+      "shareToken": "share-manali-2026",
+      "createdAt": "2026-10-29T07:11:26.883Z",
+      "updatedAt": "2026-10-29T07:11:26.883Z"
+    },
+    {
+      "id": "86ae1160-aede-4acc-84ab-4020f85a6347",
+      "userId": "0c1098e9-a227-4a48-9027-9f9bc030643a",
+      "title": "Trip to Goa",
+      "destinationCity": "Goa",
+      "destinationId": null,
+      "startDate": "2026-10-29",
+      "endDate": "2026-11-01",
+      "totalBudget": 23000,
+      "status": "planned",
+      "isPublic": false,
+      "shareToken": "tr-hwawe6dk",
+      "createdAt": "2026-10-29T07:35:13.822Z",
+      "updatedAt": "2026-10-29T07:35:13.822Z"
+    },
+    {
+      "id": "d29333f3-0e7b-41f3-93f9-6156d18a8408",
+      "userId": "0c1098e9-a227-4a48-9027-9f9bc030643a",
+      "title": "Trip to Tokyo",
+      "destinationCity": "Tokyo",
+      "destinationId": null,
+      "startDate": "2026-10-29",
+      "endDate": "2026-11-01",
+      "totalBudget": 5000,
+      "status": "planned",
+      "isPublic": false,
+      "shareToken": "tr-vo7pip99",
+      "createdAt": "2026-10-29T07:59:05.466Z",
+      "updatedAt": "2026-10-29T07:59:05.467Z"
+    }
+  ],
+  "itineraryDays": [
+    {
+      "id": "f474d161-1bf6-42e7-9e79-fcf0ecd1d16a",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "dayNumber": 1,
+      "date": "2026-11-10",
+      "notes": "Arrival & acclimatization in Old Manali",
+      "createdAt": "2026-10-29T07:11:26.885Z",
+      "updatedAt": "2026-10-29T07:11:26.885Z"
+    },
+    {
+      "id": "a3af084c-0947-4f65-a64a-8a9abe54de5e",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "dayNumber": 2,
+      "date": "2026-11-11",
+      "notes": "Adventure day at Solang Valley",
+      "createdAt": "2026-10-29T07:11:26.888Z",
+      "updatedAt": "2026-10-29T07:11:26.888Z"
+    },
+    {
+      "id": "2acfa94a-37fd-4830-bbf2-8a1a5c7d5da4",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "dayNumber": 3,
+      "date": "2026-11-12",
+      "notes": "Heritage & Cafe hopping",
+      "createdAt": "2026-10-29T07:11:26.891Z",
+      "updatedAt": "2026-10-29T07:11:26.891Z"
+    },
+    {
+      "id": "fbe93441-15fc-4ea5-aabc-b5e692fd9dcd",
+      "tripId": "86ae1160-aede-4acc-84ab-4020f85a6347",
+      "dayNumber": 1,
+      "date": "2026-10-29",
+      "notes": "Day 1 itinerary for Goa",
+      "createdAt": "2026-10-29T07:35:13.827Z",
+      "updatedAt": "2026-10-29T07:35:13.827Z"
+    },
+    {
+      "id": "921d52cd-1dd2-415e-9060-e56fb5542e3b",
+      "tripId": "86ae1160-aede-4acc-84ab-4020f85a6347",
+      "dayNumber": 2,
+      "date": "2026-10-30",
+      "notes": "Day 2 itinerary for Goa",
+      "createdAt": "2026-10-29T07:35:13.830Z",
+      "updatedAt": "2026-10-29T07:35:13.830Z"
+    },
+    {
+      "id": "439bf2f5-df1a-4f99-8e23-6977de912d31",
+      "tripId": "86ae1160-aede-4acc-84ab-4020f85a6347",
+      "dayNumber": 3,
+      "date": "2026-10-31",
+      "notes": "Day 3 itinerary for Goa",
+      "createdAt": "2026-10-29T07:35:13.833Z",
+      "updatedAt": "2026-10-29T07:35:13.833Z"
+    },
+    {
+      "id": "929a0cc5-0cfa-46b0-8760-99d490b9faf5",
+      "tripId": "86ae1160-aede-4acc-84ab-4020f85a6347",
+      "dayNumber": 4,
+      "date": "2026-11-01",
+      "notes": "Day 4 itinerary for Goa",
+      "createdAt": "2026-10-29T07:35:13.836Z",
+      "updatedAt": "2026-10-29T07:35:13.836Z"
+    },
+    {
+      "id": "ddd4fe8c-6352-4b73-8375-85775e4361a5",
+      "tripId": "d29333f3-0e7b-41f3-93f9-6156d18a8408",
+      "dayNumber": 1,
+      "date": "2026-10-29",
+      "notes": "Day 1 itinerary for Tokyo",
+      "createdAt": "2026-10-29T07:59:05.472Z",
+      "updatedAt": "2026-10-29T07:59:05.472Z"
+    },
+    {
+      "id": "59cf5955-4ed5-4c57-b3d7-10f743fe8b48",
+      "tripId": "d29333f3-0e7b-41f3-93f9-6156d18a8408",
+      "dayNumber": 2,
+      "date": "2026-10-30",
+      "notes": "Day 2 itinerary for Tokyo",
+      "createdAt": "2026-10-29T07:59:05.475Z",
+      "updatedAt": "2026-10-29T07:59:05.475Z"
+    },
+    {
+      "id": "fb55a92c-9118-42e0-8dbb-a567b625878b",
+      "tripId": "d29333f3-0e7b-41f3-93f9-6156d18a8408",
+      "dayNumber": 3,
+      "date": "2026-10-31",
+      "notes": "Day 3 itinerary for Tokyo",
+      "createdAt": "2026-10-29T07:59:05.479Z",
+      "updatedAt": "2026-10-29T07:59:05.479Z"
+    },
+    {
+      "id": "c72a7029-e4bd-45b0-a06b-59eecb2c5c50",
+      "tripId": "d29333f3-0e7b-41f3-93f9-6156d18a8408",
+      "dayNumber": 4,
+      "date": "2026-11-01",
+      "notes": "Day 4 itinerary for Tokyo",
+      "createdAt": "2026-10-29T07:59:05.482Z",
+      "updatedAt": "2026-10-29T07:59:05.482Z"
+    }
+  ],
+  "itineraryItems": [
+    {
+      "id": "e67623fb-a54e-407b-b1c2-0f7e8ac6d098",
+      "dayId": "f474d161-1bf6-42e7-9e79-fcf0ecd1d16a",
+      "title": "Volvo Bus Arrival at Mall Road",
+      "startTime": "08:30",
+      "endTime": "09:30",
+      "transportMode": "Bus",
+      "estimatedCost": 1500,
+      "placeName": "Private Bus Stand, Mall Road",
+      "notes": "Check-in to resort, freshen up and breakfast",
+      "sortOrder": 1,
+      "createdAt": "2026-10-29T07:11:26.893Z",
+      "updatedAt": "2026-10-29T07:11:26.893Z"
+    },
+    {
+      "id": "4e3031fd-914b-42a9-82e8-65dee82c3fb8",
+      "dayId": "f474d161-1bf6-42e7-9e79-fcf0ecd1d16a",
+      "title": "Visit Hadimba Temple & Cedar Forest",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "transportMode": "Walking",
+      "estimatedCost": 200,
+      "placeName": "Hadimba Devi Temple",
+      "notes": "Traditional wooden pagoda architecture amidst towering deodar trees",
+      "sortOrder": 2,
+      "createdAt": "2026-10-29T07:11:26.896Z",
+      "updatedAt": "2026-10-29T07:11:26.896Z"
+    },
+    {
+      "id": "76153f5f-4ffb-4403-b521-40f0492d0fd0",
+      "dayId": "a3af084c-0947-4f65-a64a-8a9abe54de5e",
+      "title": "Drive to Solang Valley for Paragliding",
+      "startTime": "09:00",
+      "endTime": "14:00",
+      "transportMode": "Car",
+      "estimatedCost": 3500,
+      "placeName": "Solang Valley Ground",
+      "notes": "Book tandem paragliding and zorbing at government-certified counter",
+      "sortOrder": 1,
+      "createdAt": "2026-10-29T07:11:26.899Z",
+      "updatedAt": "2026-10-29T07:11:26.899Z"
+    },
+    {
+      "id": "ccd61dba-00ce-402f-84f2-019296d039fa",
+      "dayId": "2acfa94a-37fd-4830-bbf2-8a1a5c7d5da4",
+      "title": "Jogini Waterfall Trek & Vashisht Hot Springs",
+      "startTime": "10:00",
+      "endTime": "14:30",
+      "transportMode": "Walking",
+      "estimatedCost": 500,
+      "placeName": "Vashisht Village",
+      "notes": "Scenic 3km hike to the multi-tier cascading waterfall",
+      "sortOrder": 1,
+      "createdAt": "2026-10-29T07:11:26.901Z",
+      "updatedAt": "2026-10-29T07:11:26.901Z"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "db6fa132-f88f-48d7-afc1-cad956aa89eb",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "category": "Lodging",
+      "amount": 7500,
+      "description": "3 Nights Boutique Riverside Resort",
+      "expenseDate": "2026-11-10",
+      "createdAt": "2026-10-29T07:11:26.904Z",
+      "updatedAt": "2026-10-29T07:11:26.904Z"
+    },
+    {
+      "id": "2061d44f-fa47-4912-8020-86a57f5aa3a1",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "category": "Transport",
+      "amount": 4200,
+      "description": "Round-trip Volvo bus + local cab hire",
+      "expenseDate": "2026-11-10",
+      "createdAt": "2026-10-29T07:11:26.907Z",
+      "updatedAt": "2026-10-29T07:11:26.907Z"
+    },
+    {
+      "id": "97ed33cd-a4ad-4d60-92f6-9f6d9db3a1d4",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "category": "Activities",
+      "amount": 3500,
+      "description": "Solang paragliding pass",
+      "expenseDate": "2026-11-11",
+      "createdAt": "2026-10-29T07:11:26.910Z",
+      "updatedAt": "2026-10-29T07:11:26.910Z"
+    },
+    {
+      "id": "46135548-ce51-494a-963e-eb2d5bdcb65f",
+      "tripId": "664e6e25-b054-4fe7-85e3-22713fe11680",
+      "category": "Food",
+      "amount": 2800,
+      "description": "Old Manali cafes and local trout dinner",
+      "expenseDate": "2026-11-12",
+      "createdAt": "2026-10-29T07:11:26.913Z",
+      "updatedAt": "2026-10-29T07:11:26.913Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "7e35e855-0ca6-40ff-b54b-a252b93ee633",
+      "destinationId": "dest-manali",
+      "userId": "0c1098e9-a227-4a48-9027-9f9bc030643a",
+      "userName": "Alex Rivera",
+      "rating": 5,
+      "comment": "Solang Valley paragliding was breathtaking! Make sure to stay in Old Manali for peaceful mountain vibes and live music cafes.",
+      "createdAt": "2026-10-15T10:00:00.000Z",
+      "updatedAt": "2026-10-29T07:11:26.917Z"
+    },
+    {
+      "id": "640d756f-6c95-4346-b6f4-8d1c64670f9b",
+      "destinationId": "dest-manali",
+      "userId": "user-priya",
+      "userName": "Priya Sharma",
+      "rating": 5,
+      "comment": "The morning walk through cedar trails to Hadimba temple is pure bliss. Check weather updates before crossing Atal Tunnel.",
+      "createdAt": "2026-10-20T14:30:00.000Z",
+      "updatedAt": "2026-10-29T07:11:26.922Z"
+    },
+    {
+      "id": "7610208c-6983-4e31-aac8-6cff8d7714dd",
+      "destinationId": "dest-goa",
+      "userId": "0c1098e9-a227-4a48-9027-9f9bc030643a",
+      "userName": "Alex Rivera",
+      "rating": 5,
+      "comment": "South Goa beaches (Palolem & Agonda) are remarkably pristine. Renting a scooter is the most efficient way to get around.",
+      "createdAt": "2026-09-12T16:00:00.000Z",
+      "updatedAt": "2026-10-29T07:11:26.926Z"
+    },
+    {
+      "id": "8242e8aa-d2ea-4c6a-a004-d6248ee7701d",
+      "destinationId": "dest-jaipur",
+      "userId": "user-rohit",
+      "userName": "Rohit Verma",
+      "rating": 5,
+      "comment": "Amber Fort light & sound show is a must watch! Plan 3 full days to cover all palaces comfortably.",
+      "createdAt": "2026-10-01T11:20:00.000Z",
+      "updatedAt": "2026-10-29T07:11:26.931Z"
+    }
+  ]
+}

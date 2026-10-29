@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderPlan — Intelligent Travel Planner & Itinerary Management</title>
+  <meta name="description" content="Effortless travel planning with dynamic itineraries, real-time weather forecasts, smart budget tracking, and community destination reviews.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet Interactive Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Premium Animated Splash Screen (No Skip Button) -->
+  <div id="splash-screen" class="splash-screen">
+    <!-- Starfield & Cosmic Aura Backdrops -->
+    <div class="splash-cosmic-bg">
+      <div class="splash-glow-circle circle-cyan"></div>
+      <div class="splash-glow-circle circle-purple"></div>
+      <div class="splash-constellations"></div>
+    </div>
+
+    <div class="splash-content">
+      <!-- Animated Globe & Orbiting Airplane Emblem -->
+      <div class="splash-emblem-container">
+        <div class="splash-pulse-ring ring-outer"></div>
+        <div class="splash-pulse-ring ring-mid"></div>
+        <div class="splash-orbit-path">
+          <div class="splash-orbiting-plane">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#38bdf8" stroke="#ffffff" stroke-width="1.2">
+              <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-.9-.2-1.6.4-1.3 1.2l3 4.5-3.5 3.5-2.5-.5c-.6-.1-1.1.4-.9 1 .2.4.6.6 1 .6l3.5.2 2 2c.4.4.9.5 1.3.3l1.8-1.8 4.5 3c.8.5 1.6-.2 1.4-1.1z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="splash-globe-core">
+          <svg class="splash-globe-svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <defs>
+              <linearGradient id="globeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="50%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="10" stroke="url(#globeGrad)" stroke-width="1.8"/>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" stroke="url(#globeGrad)" stroke-width="1.5"/>
+            <path d="M2 12h20" stroke="url(#globeGrad)" stroke-width="1.5"/>
+            <!-- 8-Point Compass Star -->
+            <polygon points="12,4 13.5,10.5 20,12 13.5,13.5 12,20 10.5,13.5 4,12 10.5,10.5" fill="rgba(56, 189, 248, 0.25)" stroke="#38bdf8" stroke-width="1.2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- App Title & Slogan -->
+      <div class="splash-typography">
+        <h1 class="splash-title">WanderPlan</h1>
+        <p class="splash-subtitle">Your Intelligent Travel Companion — College Edition</p>
+      </div>
+
+      <!-- Loading Progress Section -->
+      <div class="splash-progress-wrapper">
+        <div class="splash-progress-header">
+          <span class="splash-status-text" id="splash-status-label">🌍 Initializing WanderPlan Engine...</span>
+          <span class="splash-percent-text" id="splash-percent-label">0%</span>
+        </div>
+        <div class="splash-progress-track">
+          <div class="splash-progress-bar" id="splash-progress-fill" style="width: 0%;">
+            <div class="splash-progress-glow-tip"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Feature Pills -->
+      <div class="splash-feature-pills">
+        <div class="splash-pill">
+          <span>🗺️ Dynamic Itineraries</span>
+        </div>
+        <div class="splash-pill">
+          <span>🌦️ Live Weather</span>
+        </div>
+        <div class="splash-pill">
+          <span>💰 Smart Budget</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand" id="brand-logo" role="button">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">WanderPlan</span>
+          <span class="brand-badge">College Project Edition</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-link active" data-tab="tab-explore" id="nav-explore-btn">
+          <span>Explore Places</span>
+        </button>
+        <button class="nav-link" data-tab="tab-trips" id="nav-trips-btn">
+          <span>My Trips</span>
+          <span class="badge-counter" id="trips-count-badge">1</span>
+        </button>
+        <button class="nav-link" data-tab="tab-itinerary" id="nav-itinerary-btn">
+          <span>Itinerary & Routes</span>
+        </button>
+        <button class="nav-link" data-tab="tab-budget" id="nav-budget-btn">
+          <span>Budget Tracker</span>
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Auth Guest View -->
+        <div id="auth-guest-section" class="auth-buttons">
+          <button class="btn btn-outline" id="btn-open-login">Sign In</button>
+          <button class="btn btn-primary" id="btn-open-register">Get Started</button>
+          <button class="btn btn-demo" id="btn-quick-demo" title="1-Click Demo for Viva / Evaluation">⚡ Demo Login</button>
+        </div>
+
+        <!-- Auth Logged In View -->
+        <div id="auth-user-section" class="user-profile-menu hidden">
+          <div class="user-avatar-pill" id="btn-user-profile" role="button" tabindex="0" title="Click to view & edit profile (CRUD)">
+            <span class="avatar-circle" id="user-initials">AR</span>
+            <div class="user-meta">
+              <span class="user-name" id="user-display-name">Alex Rivera</span>
+              <span class="user-role" id="user-role-label">Traveler ⚙️</span>
+            </div>
+          </div>
+          <button class="btn btn-icon btn-logout" id="btn-logout" title="Sign Out">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Areas -->
+  <main class="main-wrapper">
+
+    <!-- 1. EXPLORE & DESTINATIONS TAB -->
+    <section id="tab-explore" class="tab-pane active">
+      <!-- Hero Banner -->
+      <div class="hero-card">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-pill">
+            <span>✨ 7th Semester Server-Side Travel Planner</span>
+          </div>
+          <h1 class="hero-heading">Craft Perfect Journeys with Live Weather & Smart Itineraries</h1>
+          <p class="hero-subtext">Discover breathtaking destinations, organize day-by-day schedules, customize transportation routes, monitor expenses, and share trips with the world.</p>
+
+          <!-- Search & Filter Bar -->
+          <div class="search-glass-box">
+            <div class="search-input-group">
+              <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="destination-search-input" placeholder="Search cities, states, or countries (e.g. Manali, Goa, Tokyo, Paris)...">
+            </div>
+
+            <div class="filter-pills" id="category-filter-group">
+              <button class="category-pill active" data-category="All">All Places</button>
+              <button class="category-pill" data-category="Mountains">🏔️ Mountains</button>
+              <button class="category-pill" data-category="Beaches">🏖️ Beaches</button>
+              <button class="category-pill" data-category="Heritage">🏰 Heritage</button>
+              <button class="category-pill" data-category="Urban">🏙️ Urban</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats Strip -->
+      <div class="stats-strip">
+        <div class="stat-card">
+          <div class="stat-icon icon-blue">🗺️</div>
+          <div>
+            <div class="stat-val" id="stats-places-count">6+</div>
+            <div class="stat-label">Curated Destinations</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-green">🌦️</div>
+          <div>
+            <div class="stat-val">Live Sync</div>
+            <div class="stat-label">Weather & Forecasts</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-amber">💰</div>
+          <div>
+            <div class="stat-val">Real-Time</div>
+            <div class="stat-label">Budget Tracking</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-purple">🔗</div>
+          <div>
+            <div class="stat-val">1-Click</div>
+            <div class="stat-label">Itinerary Sharing</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Destination Grid -->
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Popular Destinations</h2>
+          <p class="section-desc">Hand-picked tourist hotspots with real-time weather analytics and traveler reviews</p>
+        </div>
+        <button class="btn btn-outline" id="btn-refresh-destinations">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Refresh Places
+        </button>
+      </div>
+
+      <div class="destinations-grid" id="destinations-container">
+        <!-- Dynamically rendered destination cards -->
+      </div>
+    </section>
+
+    <!-- 2. MY TRIPS TAB -->
+    <section id="tab-trips" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">My Travel Expeditions</h2>
+          <p class="section-desc">Manage your planned vacations, customize daily schedules, and control budget</p>
+        </div>
+        <button class="btn btn-primary" id="btn-open-create-trip">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Create New Trip
+        </button>
+      </div>
+
+      <div class="trips-grid" id="trips-container">
+        <!-- Dynamically rendered trip cards -->
+      </div>
+    </section>
+
+    <!-- 3. ITINERARY & ROUTES TAB -->
+    <section id="tab-itinerary" class="tab-pane">
+      <div class="itinerary-header-bar">
+        <div class="active-trip-selector-box">
+          <label for="active-trip-select">Current Selected Trip:</label>
+          <select id="active-trip-select" class="form-select"></select>
+        </div>
+
+        <div class="itinerary-quick-actions">
+          <button class="btn btn-demo btn-sm" id="btn-open-ai-generator" title="Generate tailored multi-day itinerary with 1-click">
+            <span>✨ AI Auto-Fill</span>
+          </button>
+          <button class="btn btn-outline btn-sm" id="btn-open-packing-list" title="Weather-aware packing checklist">
+            <span>🎒 Packing List</span>
+          </button>
+          <button class="btn btn-outline btn-sm" id="btn-print-itinerary" title="Print or Save as Offline PDF Brochure">
+            <span>📄 Print / PDF</span>
+          </button>
+          <button class="btn btn-outline btn-sm" id="btn-share-trip-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Destination Weather Forecast Banner -->
+      <div class="weather-forecast-banner" id="trip-weather-banner">
+        <div class="weather-loading-text">Loading destination weather forecast...</div>
+      </div>
+
+      <!-- Day-by-Day Timeline Canvas -->
+      <div class="itinerary-layout">
+        <div class="days-column" id="itinerary-days-container">
+          <!-- Dynamically rendered day cards with activities and route reorder -->
+        </div>
+
+        <!-- Trip Summary & Map Sidebar -->
+        <aside class="itinerary-sidebar">
+          <!-- Interactive Route Map Card -->
+          <div class="sidebar-card map-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+              <h3 class="sidebar-title" style="margin:0; border:none; padding:0;">🗺️ Route Map</h3>
+              <span class="badge badge-outline" style="font-size:0.7rem; color:var(--primary);">OpenStreetMap</span>
+            </div>
+            <div id="itinerary-map" class="itinerary-map-canvas"></div>
+            <p style="font-size:0.75rem; color:var(--text-dim); margin-top:0.5rem; text-align:center;">Interactive pins show destination and activity locations</p>
+          </div>
+
+          <div class="sidebar-card">
+            <h3 class="sidebar-title">Trip Snapshot</h3>
+            <div class="sidebar-meta" id="trip-sidebar-meta">
+              <!-- Meta filled dynamically -->
+            </div>
+          </div>
+
+          <div class="sidebar-card transport-guide-card">
+            <h3 class="sidebar-title">Supported Transportation</h3>
+            <div class="transport-legend">
+              <span class="legend-badge">✈️ Flight</span>
+              <span class="legend-badge">🚆 Train</span>
+              <span class="legend-badge">🚌 Volvo/Bus</span>
+              <span class="legend-badge">🚗 Car/Cab</span>
+              <span class="legend-badge">🚶 Walking</span>
+              <span class="legend-badge">⛴️ Ferry</span>
+            </div>
+            <p class="legend-note">Each activity has customizable transportation options and estimated travel costs.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 4. BUDGET TRACKER TAB -->
+    <section id="tab-budget" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Travel Budgeting & Expense Tracker</h2>
+          <p class="section-desc">Track real-time expenditure across accommodation, travel, food, and activities</p>
+        </div>
+        <div class="budget-header-controls">
+          <select id="budget-trip-select" class="form-select"></select>
+          <button class="btn btn-primary" id="btn-open-add-expense">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Expense
+          </button>
+        </div>
+      </div>
+
+      <!-- Budget KPI Cards -->
+      <div class="budget-kpis-grid">
+        <div class="budget-card">
+          <div class="kpi-label">Allocated Target Budget</div>
+          <div class="kpi-value text-blue" id="budget-kpi-total">₹0</div>
+          <div class="kpi-caption">Set for this trip</div>
+        </div>
+        <div class="budget-card">
+          <div class="kpi-label">Actual Total Spent</div>
+          <div class="kpi-value text-amber" id="budget-kpi-spent">₹0</div>
+          <div class="kpi-caption" id="budget-kpi-spent-percent">0% of budget used</div>
+        </div>
+        <div class="budget-card">
+          <div class="kpi-label">Remaining Balance</div>
+          <div class="kpi-value text-green" id="budget-kpi-remaining">₹0</div>
+          <div class="kpi-caption" id="budget-kpi-status-text">Within budget limits</div>
+        </div>
+      </div>
+
+      <!-- Budget Progress Bar -->
+      <div class="budget-progress-container">
+        <div class="progress-bar-labels">
+          <span>Budget Utilization</span>
+          <span id="budget-progress-percent">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="budget-progress-bar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+
+      <!-- Categorized Breakdown & Expense Table Layout -->
+      <div class="budget-details-grid">
+        <!-- Categories Bars -->
+        <div class="budget-categories-card">
+          <h3 class="card-subtitle">Spending by Category</h3>
+          <div class="categories-list" id="budget-categories-list">
+            <!-- Dynamic Category Breakdown -->
+          </div>
+        </div>
+
+        <!-- Logged Expenses Table -->
+        <div class="expense-log-card">
+          <h3 class="card-subtitle">Expense Log History</h3>
+          <div class="table-responsive">
+            <table class="expense-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="expense-table-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Currency Converter Card -->
+      <div class="currency-converter-card">
+        <div class="currency-card-header">
+          <div>
+            <h3 class="card-subtitle" style="margin:0; border:none; padding:0;">💱 Multi-Currency Travel Converter</h3>
+            <p style="font-size:0.78rem; color:var(--text-dim); margin-top:0.2rem;">Convert your INR travel budget to popular world currencies (rates as of 2026)</p>
+          </div>
+          <span class="badge badge-outline" style="font-size:0.7rem; color:var(--accent-green); border-color:var(--accent-green);">Fixed Rates</span>
+        </div>
+
+        <div class="currency-input-row">
+          <div class="currency-input-group">
+            <label>Amount in INR (₹)</label>
+            <div class="currency-field-wrap">
+              <span class="currency-symbol-prefix">₹</span>
+              <input type="number" id="currency-inr-input" class="form-control currency-inr-input"
+                placeholder="Enter amount..." min="1" value="30000">
+            </div>
+          </div>
+          <button class="btn btn-demo btn-sm" id="btn-use-trip-budget" style="margin-top:1.5rem;" title="Import current trip total budget">
+            📥 Use Trip Budget
+          </button>
+        </div>
+
+        <div class="currency-results-grid" id="currency-results-grid">
+          <!-- Dynamically populated conversion cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PUBLIC SHARED TRIP VIEW (MODAL / OVERLAY) -->
+    <div id="shared-trip-modal" class="modal-backdrop hidden">
+      <div class="modal-card modal-lg">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="badge badge-public">Shared Itinerary View</span>
+            <h2 class="modal-title" id="shared-modal-trip-title">Trip Title</h2>
+            <p class="modal-subtitle" id="shared-modal-trip-meta">Destination & Dates</p>
+          </div>
+          <button class="modal-close-btn" id="close-shared-modal">&times;</button>
+        </div>
+        <div class="modal-body" id="shared-modal-body">
+          <!-- Shared trip itinerary breakdown -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- A. Destination Weather & Reviews Modal -->
+  <div id="destination-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="dest-modal-title">Destination Details</h2>
+          <p class="modal-subtitle" id="dest-modal-subtitle">City, Country</p>
+        </div>
+        <button class="modal-close-btn" id="close-dest-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Image & Description -->
+        <div class="dest-modal-banner">
+          <img id="dest-modal-img" src="" alt="Destination">
+          <div class="dest-modal-overlay">
+            <p id="dest-modal-desc"></p>
+          </div>
+        </div>
+
+        <!-- Weather Widget in Modal -->
+        <div class="modal-section">
+          <h3 class="section-subtitle">Real-time Weather & Travel Advisory</h3>
+          <div id="dest-modal-weather-content" class="weather-card-compact">
+            <div class="weather-loading-text">Fetching current weather...</div>
+          </div>
+        </div>
+
+        <!-- Reviews & Ratings Section -->
+        <div class="modal-section">
+          <div class="reviews-header">
+            <div>
+              <h3 class="section-subtitle">Traveler Reviews & Tips</h3>
+              <div class="rating-aggregate" id="dest-rating-summary">
+                <span class="star-rating-large">★ 4.8</span>
+                <span class="review-count">(24 traveler reviews)</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-toggle-add-review">+ Write a Review</button>
+          </div>
+
+          <!-- Add Review Form (Hidden by default) -->
+          <form id="add-review-form" class="review-form hidden">
+            <h4>Share Your Travel Experience</h4>
+            <div class="form-group">
+              <label>Your Rating (1 to 5 Stars):</label>
+              <div class="star-rating-selector" id="star-selector">
+                <button type="button" class="star-btn" data-value="1">★</button>
+                <button type="button" class="star-btn" data-value="2">★</button>
+                <button type="button" class="star-btn" data-value="3">★</button>
+                <button type="button" class="star-btn" data-value="4">★</button>
+                <button type="button" class="star-btn active" data-value="5">★</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="review-comment-input">Review / Travel Advice:</label>
+              <textarea id="review-comment-input" class="form-control" rows="3" placeholder="Share hidden gems, transport tips, or packing suggestions..." required></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="btn-cancel-review">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+            </div>
+          </form>
+
+          <!-- Reviews List -->
+          <div class="reviews-list" id="dest-reviews-list">
+            <!-- Dynamically populated reviews -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B. Create Trip Modal -->
+  <div id="create-trip-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Create New Trip</h2>
+        <button class="modal-close-btn" id="close-create-trip-modal">&times;</button>
+      </div>
+      <form id="create-trip-form" class="modal-body">
+        <div class="form-group">
+          <label for="trip-title-input">Trip Name / Title *</label>
+          <input type="text" id="trip-title-input" class="form-control" placeholder="e.g. Winter Ski Trip in Manali" required>
+        </div>
+        <div class="form-group">
+          <label for="trip-city-input">Destination City *</label>
+          <input type="text" id="trip-city-input" class="form-control" placeholder="e.g. Manali, Goa, Tokyo" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="trip-start-date">Start Date *</label>
+            <input type="date" id="trip-start-date" class="form-control" required>
+          </div>
+          <div class="form-group col">
+            <label for="trip-end-date">End Date *</label>
+            <input type="date" id="trip-end-date" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="trip-budget-input">Total Travel Budget (₹) *</label>
+          <input type="number" id="trip-budget-input" class="form-control" placeholder="e.g. 25000" min="500" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="btn-cancel-create-trip">Cancel</button>
+          <button type="submit" class="btn btn-primary">Generate Trip & Itinerary</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- C. Add / Edit Itinerary Activity Modal -->
+  <div id="activity-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="activity-modal-title">Add Activity to Itinerary</h2>
+        <button class="modal-close-btn" id="close-activity-modal">&times;</button>
+      </div>
+      <form id="activity-form" class="modal-body">
+        <input type="hidden" id="activity-day-id">
+        <input type="hidden" id="activity-item-id">
+        
+        <div class="form-group">
+          <label for="act-title-input">Activity / Sightseeing Name *</label>
+          <input type="text" id="act-title-input" class="form-control" placeholder="e.g. Paragliding at Solang Valley" required>
+        </div>
+        <div class="form-group">
+          <label for="act-place-input">Specific Location / Landmark</label>
+          <input type="text" id="act-place-input" class="form-control" placeholder="e.g. Solang Ground, Burwa">
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="act-start-time">Start Time</label>
+            <input type="time" id="act-start-time" class="form-control" value="09:00">
+          </div>
+          <div class="form-group col">
+            <label for="act-end-time">End Time</label>
+            <input type="time" id="act-end-time" class="form-control" value="11:30">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="act-transport-select">Transport Mode</label>
+            <select id="act-transport-select" class="form-select">
+              <option value="Walking">🚶 Walking</option>
+              <option value="Car">🚗 Car / Cab</option>
+              <option value="Bus">🚌 Volvo / Bus</option>
+              <option value="Train">🚆 Train</option>
+              <option value="Flight">✈️ Flight</option>
+              <option value="Ferry">⛴️ Ferry / Boat</option>
+            </select>
+          </div>
+          <div class="form-group col">
+            <label for="act-cost-input">Estimated Cost (₹)</label>
+            <input type="number" id="act-cost-input" class="form-control" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="act-notes-input">Travel Notes & Tips</label>
+          <textarea id="act-notes-input" class="form-control" rows="2" placeholder="e.g. Book passes in advance; early morning has lowest queues"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="btn-cancel-act-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Activity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- D. Add Expense Modal -->
+  <div id="expense-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Record Expense</h2>
+        <button class="modal-close-btn" id="close-expense-modal">&times;</button>
+      </div>
+      <form id="expense-form" class="modal-body">
+        <div class="form-group">
+          <label for="exp-category-select">Expense Category *</label>
+          <select id="exp-category-select" class="form-select" required>
+            <option value="Lodging">🏨 Lodging & Accommodation</option>
+            <option value="Transport">🚗 Transportation & Fuel</option>
+            <option value="Food">🍲 Food & Dining</option>
+            <option value="Activities">🎟️ Sightseeing & Activities</option>
+            <option value="Shopping">🛍️ Souvenirs & Shopping</option>
+            <option value="Miscellaneous">📦 Miscellaneous</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exp-amount-input">Amount (₹) *</label>
+          <input type="number" id="exp-amount-input" class="form-control" placeholder="e.g. 2500" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="exp-desc-input">Description / Receipt Note</label>
+          <input type="text" id="exp-desc-input" class="form-control" placeholder="e.g. Hotel reservation deposit">
+        </div>
+        <div class="form-group">
+          <label for="exp-date-input">Expense Date</label>
+          <input type="date" id="exp-date-input" class="form-control" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="btn-cancel-expense">Cancel</button>
+          <button type="submit" class="btn btn-primary">Log Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- E. Auth Modal (Sign In / Sign Up) -->
+  <div id="auth-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="auth-modal-title">Sign In to WanderPlan</h2>
+          <p class="modal-subtitle">Access your trips and personalized itineraries</p>
+        </div>
+        <button class="modal-close-btn" id="close-auth-modal">&times;</button>
+      </div>
+      <form id="auth-form" class="modal-body">
+        <div class="form-group hidden" id="auth-name-group">
+          <label for="auth-name-input">Full Name *</label>
+          <input type="text" id="auth-name-input" class="form-control" placeholder="e.g. Alex Rivera">
+        </div>
+        <div class="form-group">
+          <label for="auth-email-input">Email Address *</label>
+          <input type="email" id="auth-email-input" class="form-control" placeholder="alex@traveler.com" required>
+        </div>
+        <div class="form-group">
+          <label for="auth-password-input">Password *</label>
+          <input type="password" id="auth-password-input" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <div class="auth-toggle-note">
+          <span id="auth-toggle-prompt">Don't have an account?</span>
+          <button type="button" class="btn-link" id="btn-toggle-auth-mode">Create One</button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary btn-block" id="auth-submit-btn">Sign In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- E2. User Profile & Account Settings Modal (Full Auth CRUD) -->
+  <div id="profile-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">Traveler Profile & Account Settings</h2>
+          <p class="modal-subtitle">Manage your personal information, travel style, and security credentials</p>
+        </div>
+        <button class="modal-close-btn" id="close-profile-modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Profile Banner Card -->
+        <div class="profile-hero-card">
+          <div class="profile-hero-avatar">
+            <span class="profile-avatar-big" id="profile-big-initials">AR</span>
+          </div>
+          <div class="profile-hero-details">
+            <div class="profile-hero-header">
+              <h3 class="profile-hero-name" id="profile-card-name">Alex Rivera</h3>
+              <span class="role-badge" id="profile-card-role">Verified Traveler</span>
+            </div>
+            <p class="profile-hero-email" id="profile-card-email">alex@traveler.com</p>
+            <p class="profile-hero-bio" id="profile-card-bio">Exploring mountain trails & cultural wonders</p>
+          </div>
+        </div>
+
+        <!-- User Stats Bar (Trips, Expenses, Spent) -->
+        <div class="profile-stats-grid">
+          <div class="profile-stat-item">
+            <span class="profile-stat-number" id="profile-stat-trips">0</span>
+            <span class="profile-stat-label">Trips Planned</span>
+          </div>
+          <div class="profile-stat-item">
+            <span class="profile-stat-number" id="profile-stat-expenses">0</span>
+            <span class="profile-stat-label">Expenses Logged</span>
+          </div>
+          <div class="profile-stat-item">
+            <span class="profile-stat-number" id="profile-stat-spent">₹0</span>
+            <span class="profile-stat-label">Total Spent</span>
+          </div>
+          <div class="profile-stat-item">
+            <span class="profile-stat-number" id="profile-stat-joined">2026</span>
+            <span class="profile-stat-label">Member Since</span>
+          </div>
+        </div>
+
+        <!-- Navigation Sub-tabs for Profile -->
+        <div class="profile-subtabs">
+          <button type="button" class="profile-tab-btn active" data-subtab="subtab-profile-edit" id="tab-btn-edit-profile">
+            <span>✏️ Edit Profile (Update)</span>
+          </button>
+          <button type="button" class="profile-tab-btn" data-subtab="subtab-profile-password" id="tab-btn-password">
+            <span>🔒 Security & Password</span>
+          </button>
+          <button type="button" class="profile-tab-btn" data-subtab="subtab-profile-danger" id="tab-btn-danger">
+            <span>⚠️ Danger Zone (Delete)</span>
+          </button>
+        </div>
+
+        <!-- Subtab 1: Edit Profile Form -->
+        <div id="subtab-profile-edit" class="profile-subtab-pane active">
+          <form id="profile-edit-form">
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="profile-name-input">Full Name *</label>
+                <input type="text" id="profile-name-input" class="form-control" required placeholder="Your full name">
+              </div>
+              <div class="form-group flex-1">
+                <label for="profile-email-input">Email Address *</label>
+                <input type="email" id="profile-email-input" class="form-control" required placeholder="your.email@example.com">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="profile-phone-input">Phone / WhatsApp</label>
+                <input type="tel" id="profile-phone-input" class="form-control" placeholder="+91 98765 43210">
+              </div>
+              <div class="form-group flex-1">
+                <label for="profile-style-select">Preferred Travel Style</label>
+                <select id="profile-style-select" class="form-control">
+                  <option value="Adventure & Culture">🏔️ Adventure & Culture</option>
+                  <option value="Solo Backpacker">🎒 Solo Backpacker</option>
+                  <option value="Beaches & Coastal">🏖️ Beaches & Coastal</option>
+                  <option value="Heritage & Historical">🏛️ Heritage & Historical</option>
+                  <option value="Luxury & Leisure">✨ Luxury & Leisure</option>
+                  <option value="Nature & Wildlife">🌲 Nature & Wildlife</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="profile-bio-input">Traveler Bio / Preferences</label>
+              <textarea id="profile-bio-input" class="form-control" rows="2" placeholder="e.g. Passionate trekker, photography lover, and foodie exploring India and beyond."></textarea>
+            </div>
+
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-primary" id="btn-save-profile">
+                <span>💾 Save Profile Changes</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Subtab 2: Change Password Form -->
+        <div id="subtab-profile-password" class="profile-subtab-pane hidden">
+          <form id="profile-password-form">
+            <p class="profile-note">Ensure your account is using a secure password with at least 6 characters.</p>
+            <div class="form-group">
+              <label for="profile-current-password">Current Password *</label>
+              <input type="password" id="profile-current-password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="profile-new-password">New Password * (Min 6 chars)</label>
+                <input type="password" id="profile-new-password" class="form-control" placeholder="••••••••" required minlength="6">
+              </div>
+              <div class="form-group flex-1">
+                <label for="profile-confirm-password">Confirm New Password *</label>
+                <input type="password" id="profile-confirm-password" class="form-control" placeholder="••••••••" required minlength="6">
+              </div>
+            </div>
+            <div class="modal-actions">
+              <button type="submit" class="btn btn-accent" id="btn-update-password">
+                <span>🔐 Update Password</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Subtab 3: Danger Zone (Delete Account) -->
+        <div id="subtab-profile-danger" class="profile-subtab-pane hidden">
+          <div class="danger-box">
+            <div class="danger-header">
+              <span class="danger-icon">⚠️</span>
+              <div>
+                <h4 class="danger-title">Delete Traveler Account</h4>
+                <p class="danger-desc">Once deleted, your account cannot be recovered. All your saved trips, itinerary schedules, packing lists, and expense records will be permanently removed.</p>
+              </div>
+            </div>
+            <div class="danger-actions">
+              <button type="button" class="btn btn-danger" id="btn-delete-account">
+                <span>🗑️ Permanently Delete My Account</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- F. Share Link Dialog Modal -->
+  <div id="share-dialog-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">Share Your Itinerary</h2>
+        <button class="modal-close-btn" id="close-share-dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="share-dialog-desc">Anyone with this link can view your day-by-day travel plan, live weather conditions, and recommended routes without logging in.</p>
+        
+        <div class="share-url-box">
+          <input type="text" id="share-link-input" class="form-control" readonly>
+          <button class="btn btn-primary" id="btn-copy-share-url">
+            <span>Copy Link</span>
+          </button>
+        </div>
+
+        <div class="share-status-info">
+          <span class="badge badge-success">✓ Public Access Enabled</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- G. AI Auto-Fill Modal -->
+  <div id="ai-generator-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">✨ AI Itinerary Auto-Generator</h2>
+          <p class="modal-subtitle">Auto-curate daily activities, timings & routes based on your vibe</p>
+        </div>
+        <button class="modal-close-btn" id="close-ai-modal">&times;</button>
+      </div>
+      <form id="ai-generator-form" class="modal-body">
+        <div class="form-group">
+          <label>Travel Vibe / Style *</label>
+          <div class="style-selector-grid">
+            <label class="style-card active">
+              <input type="radio" name="travelStyle" value="Adventure" checked>
+              <span class="style-icon">🧗‍♂️</span>
+              <span class="style-title">Adventure</span>
+              <span class="style-desc">Trekking, paragliding, thrills</span>
+            </label>
+            <label class="style-card">
+              <input type="radio" name="travelStyle" value="Relaxation">
+              <span class="style-icon">☕</span>
+              <span class="style-title">Relaxation</span>
+              <span class="style-desc">Hot springs, cafes, views</span>
+            </label>
+            <label class="style-card">
+              <input type="radio" name="travelStyle" value="Heritage">
+              <span class="style-icon">🏰</span>
+              <span class="style-title">Heritage</span>
+              <span class="style-desc">Forts, museums, bazaars</span>
+            </label>
+            <label class="style-card">
+              <input type="radio" name="travelStyle" value="Foodie">
+              <span class="style-icon">🍲</span>
+              <span class="style-title">Food & Culture</span>
+              <span class="style-desc">Street eats & culinary walks</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ai-budget-tier">Budget Tier</label>
+          <select id="ai-budget-tier" class="form-select">
+            <option value="moderate" selected>Moderate (Standard balanced expenses)</option>
+            <option value="budget">Backpacker / Budget (Low-cost stays & walking)</option>
+            <option value="luxury">Luxury / Premium (Private cabs & boutique experiences)</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="btn-cancel-ai-modal">Cancel</button>
+          <button type="submit" class="btn btn-demo" id="btn-submit-ai-gen">
+            <span>✨ Generate Itinerary</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- H. Weather-Driven Packing Checklist Modal -->
+  <div id="packing-list-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">🎒 Weather-Driven Packing Checklist</h2>
+          <p class="modal-subtitle" id="packing-modal-subtitle">Auto-generated based on destination weather</p>
+        </div>
+        <button class="modal-close-btn" id="close-packing-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="packing-checklist-content" class="packing-categories-grid">
+          <!-- Dynamically populated checklist categories -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <strong>WanderPlan — 7th Semester Server-Side Project</strong>
+        <span>Built with Node.js, Express, REST APIs & Live Weather Integration</span>
+      </div>
+      <div class="footer-right">
+        <span>DIT University • Academic Year 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
