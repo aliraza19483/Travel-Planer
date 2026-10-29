@@ -69,6 +69,7 @@ async function initApp() {
 
   await new Promise(r => setTimeout(r, 500));
   dismissSplash();
+  checkRemoteBackendConfig();
 }
 
 // Check if visiting a shared link directly e.g. /shared/trip/tr-12345
@@ -90,6 +91,19 @@ async function loadPublicSharedTrip(token) {
     }
   } catch (err) {
     showToast(err.message || 'Shared trip not found or is private.', 'error');
+  }
+}
+
+// Auto-prompt to connect Render backend if running on Vercel without a configured API URL
+function checkRemoteBackendConfig() {
+  const isLocal = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1');
+  const configuredUrl = localStorage.getItem('wanderplan_api_url') || window.WANDERPLAN_API_URL;
+
+  if (!isLocal && !configuredUrl) {
+    const modal = document.getElementById('backend-config-modal');
+    if (modal) {
+      setTimeout(() => modal.classList.remove('hidden'), 600);
+    }
   }
 }
 
@@ -234,6 +248,49 @@ function setupEventListeners() {
       if (targetPane) targetPane.classList.remove('hidden');
     });
   });
+
+  // 2c. Backend Server Connection Modal (Vercel -> Render)
+  const openBackendBtn = document.getElementById('btn-open-backend-config');
+  if (openBackendBtn) {
+    openBackendBtn.addEventListener('click', () => {
+      const modal = document.getElementById('backend-config-modal');
+      const input = document.getElementById('backend-url-input');
+      if (input) {
+        input.value = localStorage.getItem('wanderplan_api_url') || '';
+      }
+      if (modal) modal.classList.remove('hidden');
+    });
+  }
+
+  const closeBackendBtn = document.getElementById('close-backend-modal');
+  if (closeBackendBtn) {
+    closeBackendBtn.addEventListener('click', () => {
+      document.getElementById('backend-config-modal')?.classList.add('hidden');
+    });
+  }
+
+  const backendForm = document.getElementById('backend-config-form');
+  if (backendForm) {
+    backendForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('backend-url-input');
+      const rawUrl = input.value.trim().replace(/\/+$/, '');
+      if (rawUrl) {
+        localStorage.setItem('wanderplan_api_url', rawUrl);
+        showToast(`Connected to backend: ${rawUrl}! Reloading...`, 'success');
+        setTimeout(() => window.location.reload(), 800);
+      }
+    });
+  }
+
+  const resetBackendBtn = document.getElementById('btn-reset-backend-url');
+  if (resetBackendBtn) {
+    resetBackendBtn.addEventListener('click', () => {
+      localStorage.removeItem('wanderplan_api_url');
+      showToast('Reset backend URL to default. Reloading...', 'info');
+      setTimeout(() => window.location.reload(), 800);
+    });
+  }
 
   // 3. Create Trip Modal
   document.getElementById('btn-open-create-trip').addEventListener('click', openCreateTripModal);

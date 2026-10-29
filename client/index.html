@@ -150,6 +150,9 @@
             </svg>
           </button>
         </div>
+
+        <!-- Backend URL Config Button -->
+        <button class="btn btn-icon" id="btn-open-backend-config" title="Connect / Change Backend Server (Render)">🔌</button>
       </div>
     </div>
   </header>
@@ -866,6 +869,39 @@
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- E3. Backend Connection Modal (For Vercel -> Render Setup) -->
+  <div id="backend-config-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">🔌 Backend Server Settings</h2>
+          <p class="modal-subtitle">Connect Vercel frontend with your Render backend</p>
+        </div>
+        <button class="modal-close-btn" id="close-backend-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.45;">
+          This frontend is running on <strong>Vercel</strong>. To access live trips, live weather, and user accounts, connect it to your <strong>Render backend</strong>.
+        </p>
+        <form id="backend-config-form">
+          <div class="form-group">
+            <label for="backend-url-input">Render Backend URL *</label>
+            <input type="url" id="backend-url-input" class="form-control" placeholder="https://wanderplan-api.onrender.com" required>
+            <small style="color: var(--text-dim); font-size: 0.72rem; margin-top: 0.35rem; display: block;">
+              Paste your Render Web Service URL here.
+            </small>
+          </div>
+          <div class="modal-actions" style="margin-top: 1.25rem;">
+            <button type="button" class="btn btn-outline" id="btn-reset-backend-url">Reset Default</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-backend-url">
+              <span>⚡ Connect Server</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
